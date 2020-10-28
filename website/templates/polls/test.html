@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<!– CSS Styles –>
+<!--
+<style>
+html, body {
+display: flex;
+align-items: center;
+justify-content: center;
+background-color: lightblue;
+}
+
+.record {
+position: relative;
+width: 246px;
+display: inline-block;
+}
+
+.record input {
+text-align:center;
+border: 0;
+width: 240px;
+display: inline-block;
+height: 30px;
+}
+
+.record img {
+float: right;
+width: 25px;
+height: 25px;
+border: none;
+position: absolute;
+right: 7px;
+top: 3px;
+}
+
+.container {
+display: inline-block;
+text-align: center;
+}
+
+h1 {
+font-family: constantia;
+}
+
+</style>
+-->
+<html>
+<head>
+    <title>Voice Recognition: Mindster</title>
+</head>
+<body>
+    <link rel="stylesheet" href="style.css">
+    <!– Search Form –>
+    <div class="container">
+        <h1>Voice Recognition in HTML</h1>
+    <div class="record">
+    <form id="speak-form" method=”get” action=”https://www.facebook.com”>
+        <input type="text" name="q" id="transcript" placeholder="Speak" />
+        <img onclick="startRecording()" src="http://icons.iconarchive.com/icons/designbolts/free-multimedia/1024/Studio-Mic-icon.png" />
+    </form>
+    </div>
+    </div>
+</body>
+</html>
+
+<!– HTML5 Speech Recognition API –>
+
+<script>  function startRecording() {
+if (window.hasOwnProperty('webkitSpeechRecognition')) {
+    var recognition = new webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = "vi-VN";
+    recognition.start();
+    recognition.onresult = function(e) {
+        document.getElementById('transcript').value = e.results[0][0].transcript;
+        recognition.stop();
+    };
+    recognition.onerror = function(e) {
+        recognition.stop();
+    }
+    }
+}
+</script>

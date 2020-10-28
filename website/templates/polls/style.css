@@ -1,0 +1,39 @@
+html, body {
+display: flex;
+align-items: center;
+justify-content: center;
+background-color: lightblue;
+}
+
+.record {
+position: relative;
+width: 246px;
+display: inline-block;
+}
+
+.record input {
+text-align:center;
+border: 0;
+width: 240px;
+display: inline-block;
+height: 30px;
+}
+
+.record img {
+float: right;
+width: 25px;
+height: 25px;
+border: none;
+position: absolute;
+right: 7px;
+top: 3px;
+}
+
+.container {
+display: inline-block;
+text-align: center;
+}
+
+h1 {
+font-family: constantia;
+}

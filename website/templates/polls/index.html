@@ -1,0 +1,10 @@
+{% if latest_customer_list %}
+    <ul>
+    {% for customer in latest_customer_list %}
+        {{ customer }}
+        <li><a href="/polls/{{ customer.id }}/">{{ custormer.displayname }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
