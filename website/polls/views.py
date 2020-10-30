@@ -4,6 +4,8 @@ from django.http import HttpResponse
 from .models import Customers
 from .models import Comments
 from .models import Similarity
+from .models import SearchTrain
+from .tf_idf import tf_idf_cal
 from django.shortcuts import get_object_or_404
 import os
 import pandas as pd
@@ -17,8 +19,43 @@ from scipy.sparse import coo_matrix
 from datetime import datetime
 from website import settings
 from tqdm import tqdm
+import sklearn
+from sklearn.decomposition import TruncatedSVD
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "website.settings")
 django.setup()
+
+def go(request):
+    search_trains = SearchTrain.objects.values('id','input')
+    query = 'gần đây có cửa hàng nào gần nhất không'
+    query = query.lower()
+    newItems = []
+    for item in tqdm(search_trains):
+        newItem = tf_idf_cal.lowercase_data(item)
+        newItem['unigram_input'] = tf_idf_cal.count_unigram(newItem['input'])
+        newItems.append(newItem)
+    newItems.append({'id':'query','input': query, 'unigram_input':tf_idf_cal.count_unigram(query)})
+    # Tính vector cho description_document cho từng sản phẩm
+    inputCounter = tf_idf_cal.count_word_in_dataset(newItems)
+    tfidf_vectors = []
+    corpus_len = len(newItems)
+    for item in tqdm(newItems):
+        doc_len = len(item['input'])
+        tfidf_vectors.append(
+            tf_idf_cal.tfidf(doc_len, corpus_len, item['unigram_input'], inputCounter)
+        )
+    query_vector = tfidf_vectors[len(tfidf_vectors)-1]
+    query_vector = np.reshape(query_vector, (1,-1))
+    # search
+    sim_maxtrix = sklearn.metrics.pairwise.cosine_similarity(query_vector, tfidf_vectors)
+    sim_maxtrix = np.reshape(sim_maxtrix, (-1,))
+
+    idx = (-sim_maxtrix).argsort()[:20]
+    for _id in idx:
+        print(_id, sim_maxtrix[_id])
+        print(newItems[_id]['id'].upper())
+
+    # return tfidf_vectors
 
 
 def index(request):

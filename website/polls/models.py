@@ -8,6 +8,14 @@
 from django.db import models
 
 
+class SearchTrain(models.Model):
+    id = models.AutoField(db_column='id', primary_key=True)  # Field name made lowercase.
+    action = models.CharField(db_column='action', max_length=255)
+    input = models.CharField(db_column='input', max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'search_train'
 
 
 class CommentLikes(models.Model):
