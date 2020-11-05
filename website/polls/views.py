@@ -6,6 +6,7 @@ from .models import Comments
 from .models import Similarity
 from .models import SearchTrain
 from .tf_idf import tf_idf_cal
+from .neighborhood_based_recommender import NeighborhoodBasedRecs
 from django.shortcuts import get_object_or_404
 import os
 import pandas as pd
@@ -25,8 +26,11 @@ from sklearn.decomposition import TruncatedSVD
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "website.settings")
 django.setup()
 
+def getSimItem():
+    return NeighborhoodBasedRecs.recommend_items(NeighborhoodBasedRecs,user_id=13728819)
+
 def go(request):
-    search_trains = SearchTrain.objects.values('id','input')
+    search_trains = SearchTrain.objects.values('id','action','input')
     query = 'gần đây có cửa hàng nào gần nhất không'
     query = query.lower()
     newItems = []
@@ -34,7 +38,7 @@ def go(request):
         newItem = tf_idf_cal.lowercase_data(item)
         newItem['unigram_input'] = tf_idf_cal.count_unigram(newItem['input'])
         newItems.append(newItem)
-    newItems.append({'id':'query','input': query, 'unigram_input':tf_idf_cal.count_unigram(query)})
+    newItems.append({'id':'query','action':'QUERY','input': query, 'unigram_input':tf_idf_cal.count_unigram(query)})
     # Tính vector cho description_document cho từng sản phẩm
     inputCounter = tf_idf_cal.count_word_in_dataset(newItems)
     tfidf_vectors = []
@@ -53,7 +57,7 @@ def go(request):
     idx = (-sim_maxtrix).argsort()[:20]
     for _id in idx:
         print(_id, sim_maxtrix[_id])
-        print(newItems[_id]['id'].upper())
+        print(newItems[_id]['action'].upper())
 
     # return tfidf_vectors
 
