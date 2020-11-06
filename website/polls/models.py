@@ -8,20 +8,12 @@
 from django.db import models
 
 
-class SearchTrain(models.Model):
-    id = models.AutoField(db_column='id', primary_key=True)  # Field name made lowercase.
-    action = models.CharField(db_column='action', max_length=255)
-    input = models.CharField(db_column='input', max_length=255)
-
-    class Meta:
-        managed = False
-        db_table = 'search_train'
 
 
 class CommentLikes(models.Model):
     id = models.AutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
-    idowner = models.ForeignKey('Customers', models.DO_NOTHING, db_column='IdOwner')  # Field name made lowercase.
-    idcomment = models.ForeignKey('Comments', models.DO_NOTHING, db_column='IdComment')  # Field name made lowercase.
+    idowner = models.IntegerField(db_column='IdOwner')  # Field name made lowercase.
+    idcomment = models.IntegerField(db_column='IdComment')  # Field name made lowercase.
     status = models.CharField(db_column='Status', max_length=255)  # Field name made lowercase.
 
     class Meta:
@@ -38,12 +30,11 @@ class CommentPictures(models.Model):
     totallikes = models.IntegerField(db_column='TotalLikes', blank=True, null=True)  # Field name made lowercase.
     url = models.CharField(db_column='Url', max_length=255, blank=True, null=True)  # Field name made lowercase.
     width = models.IntegerField(db_column='Width', blank=True, null=True)  # Field name made lowercase.
-    commentid = models.ForeignKey('Comments', models.DO_NOTHING, db_column='CommentId', blank=True, null=True)  # Field name made lowercase.
+    commentid = models.IntegerField(db_column='CommentId', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'comment_pictures'
-
 
 
 class Comments(models.Model):
@@ -57,8 +48,8 @@ class Comments(models.Model):
     deviceurl = models.CharField(db_column='DeviceUrl', max_length=255, blank=True, null=True)  # Field name made lowercase.
     isfirstuserreview = models.IntegerField(db_column='IsFirstUserReview', blank=True, null=True)  # Field name made lowercase.
     isliked = models.IntegerField(db_column='IsLiked', blank=True, null=True)  # Field name made lowercase.
-    owner = models.ForeignKey('Customers', models.DO_NOTHING, db_column='Owner_id', blank=True, null=True)  # Field name made lowercase.
-    resid = models.ForeignKey('Restaurants', models.DO_NOTHING, db_column='ResId', blank=True, null=True)  # Field name made lowercase.
+    owner = models.IntegerField(db_column='Owner_id', blank=True, null=True)  # Field name made lowercase.
+    resid = models.IntegerField(db_column='ResId', blank=True, null=True)  # Field name made lowercase.
     title = models.TextField(db_column='Title', blank=True, null=True)  # Field name made lowercase.
     totallike = models.IntegerField(db_column='TotalLike', blank=True, null=True)  # Field name made lowercase.
     totalpictures = models.IntegerField(db_column='TotalPictures', blank=True, null=True)  # Field name made lowercase.
@@ -69,7 +60,6 @@ class Comments(models.Model):
     class Meta:
         managed = False
         db_table = 'comments'
-
 
 
 class Customers(models.Model):
@@ -92,11 +82,6 @@ class Customers(models.Model):
     class Meta:
         managed = False
         db_table = 'customers'
-
-
-
-
-
 
 
 class Restaurants(models.Model):
@@ -140,8 +125,8 @@ class Restaurants(models.Model):
 
 class Similarity(models.Model):
     created = models.DateField()
-    source = models.CharField(max_length=16, db_index=True)
-    target = models.CharField(max_length=16)
+    source = models.IntegerField(max_length=16, db_index=True)
+    target = models.IntegerField(max_length=16)
     similarity = models.DecimalField(max_digits=8, decimal_places=7)
 
     class Meta:
